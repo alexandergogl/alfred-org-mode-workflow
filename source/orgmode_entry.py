@@ -33,7 +33,11 @@ class OrgmodeEntry(object):
         }
         self.filename = "~/Desktop/Inbox.org"
         self.delimiter = ":: "
-        self.message_format = "Added '%s \n %s' to %s."
+        self.message_format = [
+            "Added '%s' to %s.",  # input without body
+            "Added '%s\n%s' to %s."  # input with heading and body
+        ]
+        self.replace_relative_dates = True  # set to False to disable replacement of relative dates
 
     def create_entry(self, string):
         entry = self.format_entry(string)
@@ -47,12 +51,26 @@ class OrgmodeEntry(object):
         pass
 
     def format_entry(self, string):
-        heading, body = self.split_string(string)
-        self.heading = heading
-        heading = "\n** " + heading
-        body = self.replace_date(body)
-        self.body = body
-        entry = heading + "\n" + body
+        splitted = self.split_string(string)
+
+        if len(splitted) == 1:
+            heading = splitted[0]
+            self.heading = heading
+            heading = "\n** " + heading
+            entry = heading
+
+            self.body = None
+        else:
+            heading, body = splitted
+            self.heading = heading
+            heading = "\n** " + heading
+
+            if self.replace_relative_dates is True:
+                body = self.replace_date(body)
+            self.body = body
+
+            entry = heading + "\n" + body
+
         return entry
 
     def split_string(self, string):
@@ -108,5 +126,9 @@ class OrgmodeEntry(object):
         filepath = self.filename.split('/')
         filename = filepath[len(filepath) - 1]
 
-        message = self.message_format % (self.heading, self.body, filename)
+        if self.body is None:
+            message = self.message_format[0] % (self.heading, filename)
+        else:
+            message = self.message_format[1] % (self.heading, self.body, filename)
+
         return message

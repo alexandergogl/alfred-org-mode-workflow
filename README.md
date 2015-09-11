@@ -31,11 +31,12 @@ Relative dates (Monday, tuesday, tomorrow, morgen, freitag) in the body of the e
 
 
 ## Installation
-Double klick on `org-mode-capture.alfredworkflow` to add it to Alfred's set of workflows. Then you need to set the path to your existing org-mode inbox file in both python script nodes (absolute notation of the path is necessary). You can also change the delimiter pattern to distinguish between head and body elements:
+Double klick on `org-mode-capture.alfredworkflow` to add it to Alfred's set of workflows. Then you need to set the path to your existing org-mode inbox file in both python script nodes (absolute notation of the path is necessary). You can also change the delimiter pattern to distinguish between head and body elements and disable the relative date replacement by setting it to `False`:
 
 ```python
 org.filename = '/Users/Alex/Documents/Planung/Planning/Inbox.org'
 org.delimiter = ':: '
+org.replace_relative_dates = True
 ```
 
 ![Edit the python script nodes within Alfred](images/workflow.png)
