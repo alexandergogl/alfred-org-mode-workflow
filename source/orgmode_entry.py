@@ -3,11 +3,22 @@ import re
 
 
 class OrgmodeEntry(object):
-    """Format a generic heading with an optional body into an orgmode file.
+    """Convert a generic text into an org-mode heading with an optional body and add it to an orgmode file.
 
-    Convert relative dates into orgmode date strings.
+    Supported modes:
+        - convert relative dates like Thuesday, tomorrow, morgen and montag into org-mode dates
+        - add the date of creation to the heading
     """
     def __init__(self):
+        self.inbox_file = "~/Desktop/Inbox.org"
+        self.delimiter = ":: "
+
+        # Creation date handling
+        self.add_creation_date = False  # add a creation date to the entry
+        self.creation_date_format = ":PROPERTIES:\n:Created: [%s-%s-%s %s]\n:END:"
+
+        # Relative date handling
+        self.replace_relative_dates = True  # set to False to disable replacement of relative dates
         self.date_format = "<%s-%s-%s %s>"
         self.weekdays = {
             "montag": 0,
@@ -31,45 +42,50 @@ class OrgmodeEntry(object):
             "morgen": 1,
             "tomorrow": 1
         }
-        self.filename = "~/Desktop/Inbox.org"
-        self.delimiter = ":: "
+
+        # Message handling
         self.message_format = [
             "Added '%s' to %s.",  # input without body
             "Added '%s\n%s' to %s."  # input with heading and body
         ]
-        self.replace_relative_dates = True  # set to False to disable replacement of relative dates
 
-    def create_entry(self, string):
+    def add_entry(self, string):
         entry = self.format_entry(string)
         self.write_to_file(entry)
         message = self.create_message()
         return message
 
     def write_to_file(self, string):
-        with open(self.filename, "a") as myfile:
+        with open(self.inbox_file, "a") as myfile:
             myfile.write(string)
         pass
 
     def format_entry(self, string):
-        splitted = self.split_string(string)
+        items = self.split_string(string)
 
-        if len(splitted) == 1:
-            heading = splitted[0]
-            self.heading = heading
-            heading = "\n** " + heading
-            entry = heading
-
+        # Format body
+        if len(items) == 1:
+            # String has no body
+            body = ""
             self.body = None
         else:
-            heading, body = splitted
-            self.heading = heading
-            heading = "\n** " + heading
+            # String has a body
+            body = items[1]
 
             if self.replace_relative_dates is True:
+                # Replace relative dates
                 body = self.replace_date(body)
-            self.body = body
 
-            entry = heading + "\n" + body
+            self.body = body
+            body = "\n" + body
+
+        # Format heading
+        heading = items[0]
+        self.heading = heading
+        heading = "\n** " + heading
+
+        # Format entry
+        entry = heading + self.get_creation_date() + body
 
         return entry
 
@@ -87,7 +103,7 @@ class OrgmodeEntry(object):
         today = datetime.datetime.now()
         delta = self.convert_relative_date(string)
         date = today + datetime.timedelta(days=delta)
-        date = self.format_date(date)
+        date = self.format_date(date, self.date_format)
         return date
 
     def convert_relative_date(self, string):
@@ -112,18 +128,27 @@ class OrgmodeEntry(object):
             delta = False
         return delta
 
-    def format_date(self, date):
+    def format_date(self, date, date_format):
         year = date.strftime("%Y")
         month = date.strftime("%m")
         day = date.strftime("%d")
         weekday = date.strftime("%a")
 
-        date = self.date_format % (year, month, day, weekday)
+        date = date_format % (year, month, day, weekday)
         return date
 
+    def get_creation_date(self):
+        if self.add_creation_date is True:
+            today = datetime.datetime.now()
+            date = self.format_date(today, self.creation_date_format)
+            date = "\n" + date
+            return date
+        else:
+            return ""
+
     def create_message(self):
-        # Get filename of file path
-        filepath = self.filename.split('/')
+        # Get inbox_file of file path
+        filepath = self.inbox_file.split('/')
         filename = filepath[len(filepath) - 1]
 
         if self.body is None:

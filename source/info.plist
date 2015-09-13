@@ -100,14 +100,16 @@ from orgmode_entry import OrgmodeEntry
 
 org = OrgmodeEntry()
 # Use an absolute path
-org.filename = '/Users/Alex/Documents/Planung/Planning/Inbox.org'
+org.inbox_file = '/Users/Alex/Documents/Planung/Planning/Inbox.org'
 org.delimiter = ':: '
+org.add_creation_date = True  # enable to add a creation date
+org.replace_relative_dates = True  # enable to convert relative dates into orgmode dates
+
 entry = 'TODO ' + entry
 
-message = org.create_entry(entry)
+message = org.add_entry(entry)
 
-print(message)
-</string>
+print(message)</string>
 				<key>type</key>
 				<integer>3</integer>
 			</dict>
@@ -178,10 +180,12 @@ from orgmode_entry import OrgmodeEntry
 
 org = OrgmodeEntry()
 # Use an absolute path
-org.filename = '/Users/Alex/Documents/Planung/Planning/Inbox.org'
+org.inbox_file = '/Users/Alex/Documents/Planung/Planning/Inbox.org'
 org.delimiter = ':: '
+org.add_creation_date = True  # enable to add a creation date
+org.replace_relative_dates = True  # enable to convert relative dates into orgmode dates
 
-message = org.create_entry(entry)
+message = org.add_entry(entry)
 
 print(message)
 </string>
@@ -218,20 +222,7 @@ print(message)
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>It is very simple to use (see syntax). It adds the entered todo or note to the specified inbox.org as a new line to the bottom of the file. Feel free to extend it :)
-
- 
-
-You have to adjust the path to your org-mode inbox file of the applescript (that's quite easy).
-
-Syntax:
-
-TODO the title of the todo entry:: the note of the todo entry
-
-Note the title of the note:: the note of the note entry
-
-
-The ":: " separates the title from the note of the entry</string>
+	<string>See https://github.com/alexandergogl/alfred-org-mode-workflow.</string>
 	<key>uidata</key>
 	<dict>
 		<key>0CBAD592-FA38-441B-977C-7CF0489F909B</key>
