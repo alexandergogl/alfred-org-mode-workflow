@@ -10,7 +10,7 @@ class OrgmodeEntry(object):
         - add the date of creation to the heading
     """
     def __init__(self):
-        self.inbox_file = "~/Desktop/Inbox.org"
+        self.inbox_file = "/Users/Alex/Desktop/inbox.org"
         self.delimiter = ":: "
 
         # Creation date handling
