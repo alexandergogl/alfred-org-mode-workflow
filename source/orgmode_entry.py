@@ -42,6 +42,17 @@ class OrgmodeEntry(object):
             "morgen": 1,
             "tomorrow": 1
         }
+        self.convenience_dates = []
+        for month in range(1, 13):
+            for day in range(1, 32):
+                date = "%s.%s" % (day, month)
+                self.convenience_dates.append(date)
+
+        # Special characters
+        # Smart line breaks: add line breaks with a substitude; ie. "  " (two spaces)
+        self.smart_line_break = True
+        self.line_break_pattern = "\s\s"
+        self.line_break_char = "\n"
 
         # Message handling
         self.message_format = [
@@ -75,6 +86,10 @@ class OrgmodeEntry(object):
             if self.replace_relative_dates is True:
                 # Replace relative dates
                 body = self.replace_date(body)
+
+            if self.smart_line_break is True:
+                # convert line breaks
+                body = self.convert_line_breaks(body)
 
             self.body = body
             body = "\n" + body
@@ -111,6 +126,7 @@ class OrgmodeEntry(object):
         string = string.lower()
         relative_dates = self.relative_dates
         weekdays = self.weekdays
+        convenience_dates = self.convenience_dates
 
         if string in relative_dates:
             delta = relative_dates[string]
@@ -124,6 +140,13 @@ class OrgmodeEntry(object):
                 delta = 7 - (current - weekday)
             else:
                 delta = weekday - current
+        # TODO: Extend replace date function
+        elif string in convenience_dates:
+            item = string.split(".")
+            day = item[0]
+            month = item[1]
+            print(day, month)
+            delta = False
         else:
             delta = False
         return delta
@@ -145,6 +168,12 @@ class OrgmodeEntry(object):
             return date
         else:
             return ""
+
+    def convert_line_breaks(self, string):
+        expression = r'(' + self.line_break_pattern + ')'
+        pattern = re.compile(expression, re.IGNORECASE)
+        result = re.sub(pattern, self.line_break_char, string)
+        return result
 
     def create_message(self):
         # Get inbox_file of file path
