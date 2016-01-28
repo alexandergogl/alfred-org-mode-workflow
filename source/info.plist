@@ -69,7 +69,7 @@
 				<key>onlyshowifquerypopulated</key>
 				<false/>
 				<key>output</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>removeextension</key>
 				<false/>
 				<key>sticky</key>
@@ -94,10 +94,9 @@
 				<key>escaping</key>
 				<integer>68</integer>
 				<key>script</key>
-				<string>entry = "{query}"
+				<string>from orgmode_entry import OrgmodeEntry
 
-from orgmode_entry import OrgmodeEntry
-
+entry = """{query}"""
 org = OrgmodeEntry()
 # Use an absolute path
 org.inbox_file = '/Users/Alex/Documents/Planung/Planning/Inbox.org'
@@ -149,7 +148,7 @@ print(message)</string>
 				<key>onlyshowifquerypopulated</key>
 				<false/>
 				<key>output</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>removeextension</key>
 				<false/>
 				<key>sticky</key>
@@ -174,10 +173,9 @@ print(message)</string>
 				<key>escaping</key>
 				<integer>68</integer>
 				<key>script</key>
-				<string>entry = "{query}"
+				<string>from orgmode_entry import OrgmodeEntry
 
-from orgmode_entry import OrgmodeEntry
-
+entry = """{query}"""
 org = OrgmodeEntry()
 # Use an absolute path
 org.inbox_file = '/Users/Alex/Documents/Planung/Planning/Inbox.org'

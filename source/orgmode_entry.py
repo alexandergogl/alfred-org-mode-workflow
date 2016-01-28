@@ -1,5 +1,9 @@
+# python version 2.7
 import datetime
 import re
+# UTF-8 encoding
+import codecs
+import unicodedata
 
 
 class OrgmodeEntry(object):
@@ -12,6 +16,9 @@ class OrgmodeEntry(object):
     def __init__(self):
         self.inbox_file = "/Users/Alex/Desktop/inbox.org"
         self.delimiter = ":: "
+
+        # Depth of heading
+        self.heading_suffix = "\n* "
 
         # Creation date handling
         self.add_creation_date = False  # add a creation date to the entry
@@ -60,14 +67,22 @@ class OrgmodeEntry(object):
             "Added '%s\n%s' to %s."  # input with heading and body
         ]
 
+    def encode(self, string):
+        """Encode the input string into unicode."""
+        if not isinstance(string, unicode):
+            string = unicode(string, "utf-8")
+        string = unicodedata.normalize('NFC', string)
+        return string
+
     def add_entry(self, string):
+        string = self.encode(string)
         entry = self.format_entry(string)
         self.write_to_file(entry)
         message = self.create_message()
         return message
 
     def write_to_file(self, string):
-        with open(self.inbox_file, "a") as myfile:
+        with codecs.open(self.inbox_file, "a", encoding='utf-8') as myfile:
             myfile.write(string)
         pass
 
@@ -97,7 +112,7 @@ class OrgmodeEntry(object):
         # Format heading
         heading = items[0]
         self.heading = heading
-        heading = "\n** " + heading
+        heading = self.heading_suffix + heading
 
         # Format entry
         entry = heading + self.get_creation_date() + body
