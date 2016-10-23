@@ -20,6 +20,10 @@ class OrgmodeEntry(object):
         # Depth of heading
         self.heading_suffix = "\n* "
 
+        # Priority handling
+        self.use_priority_tags = True
+        self.priority_tag = '#'  # tag that marks a priority value: #B => [#B]
+
         # Creation date handling
         self.add_creation_date = False  # add a creation date to the entry
         self.creation_date_format = ":PROPERTIES:\n:Created: [%s-%s-%s %s]\n:END:"
@@ -111,6 +115,12 @@ class OrgmodeEntry(object):
 
         # Format heading
         heading = items[0]
+        # Priority
+        if self.use_priority_tags is True:
+            # Search heading string for priority tag and add an orgmode
+            # priority tag to the heading
+            heading = self.add_priority(heading)
+
         self.heading = heading
         heading = self.heading_suffix + heading
 
@@ -183,6 +193,33 @@ class OrgmodeEntry(object):
             return date
         else:
             return ""
+
+    def add_priority(self, heading):
+        # search for priority tag
+        pattern = '(.+?|.?)%s(.?)\s' % self.priority_tag
+        result = re.match(pattern, heading)
+
+        # Add orgmode's priority tag to heading
+        if result is not None:
+            # remove priority tag from heading
+            pattern = '(%s.?)\s' % self.priority_tag
+            heading = re.sub(pattern, "", heading)
+
+            # add priority to heading
+            priority = result.group(2).upper()
+            task_tag = "TODO"
+            if re.match(task_tag, heading) is not None:
+                # Heading is task: add priority after task tag
+                task_tag_pos = len(task_tag)
+                heading = "%s [#%s] %s" % (
+                    heading[:task_tag_pos],
+                    priority,
+                    heading[task_tag_pos + 1:]
+                )
+            else:
+                # Heading is note
+                heading = "[#%s] %s" % (priority, heading)
+        return heading
 
     def convert_line_breaks(self, string):
         expression = r'(' + self.line_break_pattern + ')'

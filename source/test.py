@@ -2,7 +2,7 @@
 
 from orgmode_entry import OrgmodeEntry
 
-entry = u'ÄÖöü'
+entry = u'Dtwas machen:: asdfasdfasdfsd'
 
 org = OrgmodeEntry()
 # Use an absolute path
