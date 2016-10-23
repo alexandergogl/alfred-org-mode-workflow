@@ -20,16 +20,24 @@ class OrgmodeEntry(object):
         # Depth of heading
         self.heading_suffix = "\n* "
 
-        # Priority handling
+        # Smart line breaks: add line breaks with a substitude; ie. "  " (two spaces)
+        self.smart_line_break = True
+        self.line_break_pattern = "\s\s"
+        self.line_break_char = "\n"
+
+        # Add priority tags to entry
         self.use_priority_tags = True
         self.priority_tag = '#'  # tag that marks a priority value: #B => [#B]
 
-        # Creation date handling
-        self.add_creation_date = False  # add a creation date to the entry
+        # Add a task created date to entry
+        self.add_creation_date = True  # add a creation date to the entry
         self.creation_date_format = ":PROPERTIES:\n:Created: [%s-%s-%s %s]\n:END:"
 
-        # Relative date handling
-        self.replace_relative_dates = True  # set to False to disable replacement of relative dates
+        # Replace absolute dates like 01.10 15:00 => <2016-10-01 Sun 15:00>
+        self.replace_absolute_dates = True
+
+        # Replace relative dates
+        self.replace_relative_dates = True
         self.date_format = "<%s-%s-%s %s>"
         self.weekdays = {
             "montag": 0,
@@ -58,12 +66,6 @@ class OrgmodeEntry(object):
             for day in range(1, 32):
                 date = "%s.%s" % (day, month)
                 self.convenience_dates.append(date)
-
-        # Special characters
-        # Smart line breaks: add line breaks with a substitude; ie. "  " (two spaces)
-        self.smart_line_break = True
-        self.line_break_pattern = "\s\s"
-        self.line_break_char = "\n"
 
         # Message handling
         self.message_format = [
@@ -101,6 +103,10 @@ class OrgmodeEntry(object):
         else:
             # String has a body
             body = items[1]
+
+            if self.replace_absolute_dates is True:
+                # Replace absolute dates
+                body = self.convert_absolute_date(body)
 
             if self.replace_relative_dates is True:
                 # Replace relative dates
@@ -184,6 +190,68 @@ class OrgmodeEntry(object):
 
         date = date_format % (year, month, day, weekday)
         return date
+
+    def convert_absolute_date(self, string):
+        # Set up pattern
+        date_pattern = [
+            '\d{1,2}\.\d{1,2}\.\d{4}',  # 01.09.2016 and 1.9.2016
+            '\d{1,2}\.\d{1,2}'
+        ]
+        time_pattern = '\s\d{2}\:\d{2}'  # HH:MM
+
+        # Search for date string
+        date = None
+        # Pattern 0
+        pattern = "(%s)" % date_pattern[0]
+        result = re.search(pattern, string)
+        # format to orgmode timestamp
+        if result is not None:
+            sub_pattern = pattern
+            date = result.group(1)
+            date = datetime.datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d %a')
+            # format as orgmode date format
+            # date = self.format_date(date, self.date_format)
+        else:
+            # Pattern 1
+            pattern = "(%s)" % date_pattern[1]
+            result = re.search(pattern, string)
+            if result is not None:
+                sub_pattern = pattern
+                date = result.group(1)
+                date = datetime.datetime.strptime(date, '%d.%m').strftime('%m-%d')
+
+                # Add year to date
+                # Compare with today's date
+                today = datetime.datetime.today()
+                date_compare = "%s-%s" % (today.year, date)
+                date_compare = datetime.datetime.strptime(date_compare, "%Y-%m-%d")
+                if date_compare > today:
+                    # Date is this year
+                    year = today.year
+                else:
+                    # Date is next year
+                    year = today.year + 1
+                # Add year to date
+                date = "%s-%s" % (year, date)
+                # format as orgmode date
+                date = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d %a')
+
+        # Search for time in string
+        time = ""
+        pattern = "(%s|%s)(%s)" % (date_pattern[0], date_pattern[1], time_pattern)
+        result = re.search(pattern, string)
+        if result is not None:
+            sub_pattern = pattern
+            time = result.group(2)
+
+        if date is not None:
+            # format as orgmode timestamp
+            date = "<%s%s>" % (date, time)
+
+            # replace date with orgmode timestamp
+            string = re.sub(sub_pattern, date, string, count=1)
+
+        return string
 
     def get_creation_date(self):
         if self.add_creation_date is True:

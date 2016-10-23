@@ -2,7 +2,7 @@
 
 from orgmode_entry import OrgmodeEntry
 
-entry = u'Dtwas machen:: asdfasdfasdfsd'
+entry = u'Dtwas machen:: Ausstellung am 23.09.2014 12:00 oder am Montag bzw. am 22.10 13:00 sollte man anschauen.'
 
 org = OrgmodeEntry()
 # Use an absolute path
