@@ -25,6 +25,9 @@ class OrgmodeEntry(object):
         self.line_break_pattern = "\s\s"
         self.line_break_char = "\n"
 
+        # Cleanup spaces (double, leading, and trailing)
+        self.cleanup_spaces = True
+
         # Add priority tags to entry
         self.use_priority_tags = True
         self.priority_tag = '#'  # tag that marks a priority value: #B => [#B]
@@ -39,6 +42,7 @@ class OrgmodeEntry(object):
         # Replace relative dates
         self.replace_relative_dates = True
         self.date_format = "<%s-%s-%s %s>"
+        self.date_format_regex = "<\d{4}-\d{2}-\d{2}\s[A-Z][a-z]{2}>"
         self.weekdays = {
             "montag": 0,
             "monday": 0,
@@ -66,6 +70,15 @@ class OrgmodeEntry(object):
             for day in range(1, 32):
                 date = "%s.%s" % (day, month)
                 self.convenience_dates.append(date)
+
+        # Schedule and deadline keywords
+        self.convert_deadlines = True
+        self.deadline_pattern = "DL: "
+        self.deadline_keyword = "DEADLINE: "
+
+        self.convert_scheduled = True
+        self.scheduled_pattern = "S: "
+        self.scheduled_keyword = "SCHEDULED: "
 
         # Message handling
         self.message_format = [
@@ -116,8 +129,22 @@ class OrgmodeEntry(object):
                 # convert line breaks
                 body = self.convert_line_breaks(body)
 
+            if self.convert_deadlines is True:
+                # Replace deadlines
+                deadline, body = self.get_deadline_date(body)
+            else:
+                deadline = None
+
+            if self.convert_scheduled is True:
+                # Replace deadlines
+                scheduled, body = self.get_scheduled_date(body)
+            else:
+                scheduled = None
+            if self.cleanup_spaces is True:
+                body = self.remove_double_spaces(body)
+                body = self.remove_leading_trailling_spaces(body)
+
             self.body = body
-            body = "\n" + body
 
         # Format heading
         heading = items[0]
@@ -131,7 +158,18 @@ class OrgmodeEntry(object):
         heading = self.heading_suffix + heading
 
         # Format entry
-        entry = heading + self.get_creation_date() + body
+        entry = heading
+        if deadline is not None:
+            entry += '\n%s' % deadline
+        if scheduled is not None:
+            if deadline is not None:
+                entry += ' '
+            else:
+                entry += '\n'
+            entry += scheduled
+        if self.add_creation_date is True:
+            entry += '\n%s' % self.get_creation_date()
+        entry += '\n%s' % body
 
         return entry
 
@@ -254,13 +292,9 @@ class OrgmodeEntry(object):
         return string
 
     def get_creation_date(self):
-        if self.add_creation_date is True:
-            today = datetime.datetime.now()
-            date = self.format_date(today, self.creation_date_format)
-            date = "\n" + date
-            return date
-        else:
-            return ""
+        today = datetime.datetime.now()
+        date = self.format_date(today, self.creation_date_format)
+        return date
 
     def add_priority(self, heading):
         # search for priority tag
@@ -292,8 +326,53 @@ class OrgmodeEntry(object):
     def convert_line_breaks(self, string):
         expression = r'(' + self.line_break_pattern + ')'
         pattern = re.compile(expression, re.IGNORECASE)
-        result = re.sub(pattern, self.line_break_char, string)
-        return result
+        string = re.sub(pattern, self.line_break_char, string)
+        return string
+
+    def remove_double_spaces(self, string):
+        # remove double spaces (run twice)
+        expression = r'(' + '\s\s' + ')'
+        pattern = re.compile(expression)
+        for i in range(2):
+            string = re.sub(pattern, ' ', string)
+        return string
+
+    def remove_leading_trailling_spaces(self, string):
+        # remove leading and trailing spaces
+        expression = r'(' + '^\s|\s$' ')'
+        pattern = re.compile(expression)
+        string = re.sub(pattern, '', string)
+        return string
+
+    def get_deadline_date(self, string):
+        # Get deadline
+        expression = r'(' + self.deadline_pattern + self.date_format_regex + ')'
+        pattern = re.compile(expression, re.IGNORECASE)
+        deadline = re.search(pattern, string)
+        if deadline is not None:
+            # DL: => DEADLINE:
+            deadline = re.sub(r'(' + self.deadline_pattern + ')', self.deadline_keyword, deadline.group(1))
+
+        # Remove deadline from string
+        pattern = re.compile(expression, re.IGNORECASE)
+        body = re.sub(pattern, '', string)
+
+        return deadline, body
+
+    def get_scheduled_date(self, string):
+        # Get scheduled
+        expression = r'(' + self.scheduled_pattern + self.date_format_regex + ')'
+        pattern = re.compile(expression, re.IGNORECASE)
+        scheduled = re.search(pattern, string)
+        if scheduled is not None:
+            # S: => SCHEDULED:
+            scheduled = re.sub(r'(' + self.scheduled_pattern + ')', self.scheduled_keyword, scheduled.group(1))
+
+        # Remove deadline from string
+        pattern = re.compile(expression, re.IGNORECASE)
+        body = re.sub(pattern, '', string)
+
+        return scheduled, body
 
     def create_message(self):
         # Get inbox_file of file path
