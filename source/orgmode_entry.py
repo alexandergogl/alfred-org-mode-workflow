@@ -107,6 +107,7 @@ class OrgmodeEntry(object):
 
     def format_entry(self, string):
         items = self.split_string(string)
+        deadline, scheduled = None, None
 
         # Format body
         if len(items) == 1:
@@ -132,14 +133,11 @@ class OrgmodeEntry(object):
             if self.convert_deadlines is True:
                 # Replace deadlines
                 deadline, body = self.get_deadline_date(body)
-            else:
-                deadline = None
 
             if self.convert_scheduled is True:
                 # Replace deadlines
                 scheduled, body = self.get_scheduled_date(body)
-            else:
-                scheduled = None
+
             if self.cleanup_spaces is True:
                 body = self.remove_double_spaces(body)
                 body = self.remove_leading_trailling_spaces(body)
