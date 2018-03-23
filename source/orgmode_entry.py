@@ -34,7 +34,7 @@ class OrgmodeEntry(object):
 
         # Add a task created date to entry
         self.add_creation_date = True  # add a creation date to the entry
-        self.creation_date_format = ":PROPERTIES:\n:Created: [%s-%s-%s %s]\n:END:"
+        self.creation_date_format = ":PROPERTIES:\n:CREATED: [%s-%s-%s %s]\n:END:"
 
         # Replace absolute dates like 01.10 15:00 => <2016-10-01 Sun 15:00>
         self.replace_absolute_dates = True
@@ -366,7 +366,7 @@ class OrgmodeEntry(object):
             # S: => SCHEDULED:
             scheduled = re.sub(r'(' + self.scheduled_pattern + ')', self.scheduled_keyword, scheduled.group(1))
 
-        # Remove deadline from string
+        # Remove scheduled from string
         pattern = re.compile(expression, re.IGNORECASE)
         body = re.sub(pattern, '', string)
 
