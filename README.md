@@ -29,11 +29,15 @@ Relative dates (Monday, tuesday, tomorrow, morgen, freitag) in the content part 
 
 ![become orgmode dates](images/date_replacement-02.png)
 
+You can also use relative dates to add a SCHEDULE or DEADLINE by using the following syntax, where `S:` converts the following date to a SCHEDULE date, and `DL:` to a DEADLINE:
 
-If enabled, then date of creation is added to a property car:
+```
+todo Title of the workflow:: S: tomorrow DL: monday
+```
+
+By default, the date of creation is added to a property car (you can disable it inside Alfred; see Installation below):
 
 ![Date of creation](images/creation_date.png)
-
 
 ## Installation
 Double klick on `org-mode-capture.alfredworkflow` to add it to Alfred's set of workflows. Then you need to set the path to your existing org-mode inbox file in both python script nodes (absolute notation of the path is necessary). You can also change the delimiter pattern to distinguish between head and body elements and disable the relative date replacement by setting it to `False`:
