@@ -1,7 +1,9 @@
 # An org-mode-capture workflow for Alfred
+
 Append a todo or a note to an org-mode file with a short and convenient command in [Alfred](https://www.alfredapp.com/). The workflow requires Alfred's "Powerpack."
 
 ## Features
+
 The command appends a second level heading to a user defined .org file and puts all what follows `:: ` into the body of the heading (see figures below).
 
 Type todo to add a todo:
@@ -10,18 +12,15 @@ Type todo to add a todo:
 
 ![Capture a todo](images/todo-notification.png)
 
-
 Type note to add a note:
 
 ![Capture a note](images/note-capture.png)
 
 ![Capture a note](images/note-notification.png)
 
-
 The added notes and todos are divided into title and content:
 
 ![Capture a note](images/result.png)
-
 
 Relative dates (Monday, tuesday, tomorrow, morgen, freitag) in the content part of the entry are converted into orgmode specific date formats `<2015-09-11 Fri>`.
 
@@ -40,6 +39,7 @@ By default, the date of creation is added to a property car (you can disable it 
 ![Date of creation](images/creation_date.png)
 
 ## Installation
+
 Double klick on `org-mode-capture.alfredworkflow` to add it to Alfred's set of workflows. Then you need to set the path to your existing org-mode inbox file in both python script nodes (absolute notation of the path is necessary). You can also change the delimiter pattern to distinguish between head and body elements and disable the relative date replacement by setting it to `False`:
 
 ```python
@@ -56,3 +56,11 @@ org.replace_relative_dates = True
 If you don't use growl, you can change the notification nodes in the alfred workflows to apple's notification centre:
 
 ![Notification system](images/supported_notificaitons.png)
+
+## Customisation
+
+Following variables can be customised directly in the Alfred Workflow by editing the Workflow Environment Variables:
+
+* inbox filepath for todos, notes, and inspirations
+* heading_level of entry for each destination (default: `1`)
+* delimiter (default: `::`)
