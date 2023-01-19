@@ -1,12 +1,12 @@
 # coding=utf-8
 
-from orgmode_entry import OrgmodeEntry
+from py38.orgmode_entry import OrgmodeEntry
 
 entry = u'#A Etwas machen:: DL: Morgen S: Heute Ausstellung am 23.09.2014 12:00 oder am Montag   bzw. am 22.10 13:00 sollte man anschauen. '
 
 org = OrgmodeEntry()
 # Use an absolute path
-org.inbox_file = '/Users/Alex/Documents/Planung/Planning/Inbox.org'
+org.inbox_file = 'test_inbox.org'
 
 org.delimiter = ':: '  # tag to separate the head from the body of the entry
 org.heading_suffix = "\n* "  # depth of entry

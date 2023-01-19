@@ -1,0 +1,13 @@
+
+* TODO [#A] Etwas machen
+DEADLINE: <2023-01-20 Fri> SCHEDULED: <2023-01-19 Thu>
+:PROPERTIES:
+:CREATED: [2023-01-19 Thu]
+:END:
+Ausstellung am <2014-09-23 Tue 12:00> oder am <2023-01-23 Mon> bzw. am 22.10 13:00 sollte man anschauen.
+* TODO [#A] Etwas machen
+DEADLINE: <2023-01-20 Fri> SCHEDULED: <2023-01-19 Thu>
+:PROPERTIES:
+:CREATED: [2023-01-19 Thu]
+:END:
+Ausstellung am <2014-09-23 Tue 12:00> oder am <2023-01-23 Mon> bzw. am 22.10 13:00 sollte man anschauen.
