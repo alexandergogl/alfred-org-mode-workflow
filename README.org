@@ -1,0 +1,61 @@
+# An org-mode-capture workflow for Alfred
+
+Append a todo or a note to an org-mode file with a short and convenient command in [[https://www.alfredapp.com/][Alfred]]. The workflow requires Alfred's "Powerpack."
+
+* Features
+
+The command appends a second level heading to a user defined .org file and puts all what follows ~::~ into the body of the heading (see figures below).
+
+Type todo to add a todo:
+
+#+caption: Capture a todo
+[[file:images/todo-capture.png]]
+
+#+caption: Capture a todo
+[[file:images/todo-notification.png]]
+
+Type note to add a note:
+
+#+caption: Capture a note
+[[file:images/note-capture.png]]
+
+#+caption: Capture a note
+[[file:images/note-notification.png]]
+
+The added notes and todos are divided into title and content:
+
+#+caption: Capture a note
+[[file:images/result.png]]
+
+Relative dates (Monday, tuesday, tomorrow, morgen, freitag) in the content part of the entry are converted into orgmode specific date formats ~<2015-09-11 Fri>~.
+
+#+caption: Relative dates in Alfred
+[[file:images/date_replacement-01.png]]
+
+#+caption: become orgmode dates
+[[file:images/date_replacement-02.png]]
+
+You can also use relative dates to add a SCHEDULE or DEADLINE by using the following syntax, where ~S:~ converts the following date to a SCHEDULE date, and ~DL:~ to a DEADLINE. Note: the conversion only works if the pattern (S: or DL:) is followed by a date without a space between the pattern and the date.
+
+~~~
+todo Title of the workflow:: S:tomorrow DL:monday
+~~~
+
+By default, the date of creation is added to a property car (you can disable it inside Alfred; see Installation below):
+
+#+caption: Date of creation
+[[file:images/creation_date.png]]
+
+* Installation and customising variables
+
+Double klick on ~org-mode-capture.alfredworkflow~ to add it to Alfred's set of workflows. Then you need to set up the workflow by customising the workflow variables with Alfred's ~Configure Workflow...~ command (see figure below). It is obligatory to set at least the path to your inbox.org files. The non-obligatory variables have sane defaults, but can be customised by your liking: if you prefer ~--~ as a title-content separator, then you can change it as well.
+
+#+caption: Configure Workflow
+[[file:images/user_customisation.png]]
+
+* Reporting bugs
+
+If you encounter a bug, please enable Alfred's debugging mode and post the error message.
+
+#+caption: Alfred debugger
+[[file:images/debugging.png]]
