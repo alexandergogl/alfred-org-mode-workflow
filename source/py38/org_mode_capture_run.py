@@ -1,6 +1,6 @@
 import os
 
-from orgmode_entry import OrgmodeEntry
+from org_mode_entry import OrgmodeEntry
 
 
 def convert_boolean(string):
