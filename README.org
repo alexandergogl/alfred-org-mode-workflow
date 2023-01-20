@@ -51,7 +51,7 @@ By default, the date of creation is added to a property car (you can disable it 
 Double klick on ~org-mode-capture.alfredworkflow~ to add it to Alfred's set of workflows. Then you need to set up the workflow by customising the workflow variables with Alfred's ~Configure Workflow...~ command (see figure below). It is obligatory to set at least the path to your inbox.org files. The non-obligatory variables have sane defaults, but can be customised by your liking: if you prefer ~--~ as a title-content separator, then you can change it as well.
 
 #+caption: Configure Workflow
-[[file:images/user_customisation.png]]
+[[file:images/user_configuration.png]]
 
 * Reporting bugs
 
