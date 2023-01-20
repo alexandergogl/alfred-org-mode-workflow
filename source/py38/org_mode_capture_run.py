@@ -34,12 +34,13 @@ def run(entry, action):
                                         int(os.getenv("todos_heading_level")))
 
     # tag to separate the head from the body of the entry
-    org.delimiter = os.getenv("delimiter")
+    org.delimiter = str(os.getenv("delimiter"))
 
     # use priority tags: #b => [#B]
     org.use_priority_tags = convert_boolean(os.getenv("use_priority_tags"))
     # tag that marks a priority value
-    org.priority_tag = '#'
+    # Default: #
+    org.priority_tag = str(os.getenv("priority_tag"))
 
     # add a creation date
     org.add_creation_date = convert_boolean(os.getenv("add_creation_date"))
@@ -53,20 +54,23 @@ def run(entry, action):
         os.getenv("replace_relative_dates"))
 
     # Convert a schedule pattern into an org scheduled date
-    org.convert_scheduled = True
-    org.scheduled_pattern = "S: "
+    # Default: "S: "
+    org.convert_scheduled = convert_boolean(os.getenv("convert_scheduled"))
+    org.scheduled_pattern = str(os.getenv("scheduled_pattern"))
 
     # Convert a deadline pattern into an org deadline
-    org.convert_deadlines = True
-    org.deadline_pattern = "DL: "
+    # Default: "DL: "
+    org.convert_deadlines = convert_boolean(os.getenv("convert_deadlines"))
+    org.deadline_pattern = str(os.getenv("deadline_pattern"))
 
     # convert a pattern into a linebreak
-    org.smart_line_break = True
+    org.smart_line_break = convert_boolean(os.getenv("smart_line_break"))
     # two spaces
-    org.line_break_pattern = "\s\s"
+    # Default: "\s\s"
+    org.line_break_pattern = os.getenv("line_break_pattern")
 
     # Cleanup spaces (double, leading, and trailing)
-    org.cleanup_spaces = True
+    org.cleanup_spaces = convert_boolean(os.getenv("cleanup_spaces"))
 
     entry = 'TODO ' + entry
     message = org.add_entry(entry)
